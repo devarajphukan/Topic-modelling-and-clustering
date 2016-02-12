@@ -50,14 +50,17 @@ corpus = [dictionary.doc2bow(text) for text in text_corpus]
 tfidf = models.TfidfModel(corpus)
 corpus = tfidf[corpus]
 
-lsi = models.LsiModel(corpus,id2word=dictionary, num_topics=2)
+for doc in corpus :
+	
+	lsi = models.LsiModel([doc],id2word=dictionary, num_topics=1)
+	for topics in lsi.print_topics(1) :
+		print topics,'\n'
 
-for topics in lsi.print_topics(2) :
-	print topics,'\n'
-
-query = ["the bank of port".lower().split(' ')]
-
+query = ["the port of bank".lower().split(' ')]
+# query = [stem_tokens(query[0], stemmer)]
+lsi = models.LsiModel(corpus,id2word=dictionary, num_topics=len(corpus))
 vec_query = [dictionary.doc2bow(text) for text in query] 
+# print vec_query
 index = similarities.MatrixSimilarity(lsi[corpus])
 similarities = index[lsi[vec_query]]
-print similarities
+print similarities[0]
